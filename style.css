@@ -1,5 +1,5 @@
 /* ============================================================
-   style.css — TaskFlow To-Do List
+   style.css — TaskFlow Full-Stack To-Do List
    Design: Dark glassmorphism · purple/indigo + cyan palette
    ============================================================ */
 
@@ -97,13 +97,8 @@ body {
 }
 
 @keyframes float {
-  from {
-    transform: translateY(0) scale(1);
-  }
-
-  to {
-    transform: translateY(-40px) scale(1.06);
-  }
+  from { transform: translateY(0) scale(1); }
+  to   { transform: translateY(-40px) scale(1.06); }
 }
 
 /* ── 4. App Wrapper ── */
@@ -129,15 +124,8 @@ body {
 }
 
 @keyframes page-in {
-  from {
-    opacity: 0;
-    transform: translateY(22px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(22px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ── 6. Shared Header ── */
@@ -152,6 +140,12 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .logo-icon {
@@ -175,13 +169,8 @@ body {
 }
 
 @keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .app-title {
@@ -206,10 +195,91 @@ body {
   font-size: 0.9rem;
   letter-spacing: 0.4px;
   margin-top: -14px;
-  /* pull up slightly below the header gap */
 }
 
-/* ── 7. Add Task Button (top-right nav) ── */
+/* ── 7. User Badge & Auth Buttons ── */
+.user-badge {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--clr-text-dim);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 5px 12px;
+  border-radius: 999px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-logout {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--clr-text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.btn-logout:hover {
+  border-color: var(--clr-danger);
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--clr-danger);
+}
+
+.btn-admin-nav {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--clr-text-dim);
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.btn-admin-nav:hover {
+  border-color: var(--clr-accent);
+  background: rgba(6, 182, 212, 0.12);
+  color: var(--clr-accent);
+}
+
+/* Auth form switch link */
+.auth-switch {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--clr-text-muted);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--clr-primary-lit);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition);
+}
+
+.link-btn:hover {
+  color: #fff;
+}
+
+/* ── 8. Add Task Button (top-right nav) ── */
 .btn-add-nav {
   display: flex;
   align-items: center;
@@ -245,7 +315,7 @@ body {
   line-height: 1;
 }
 
-/* ── 8. Back Button ── */
+/* ── 9. Back Button ── */
 .btn-back {
   display: flex;
   align-items: center;
@@ -269,7 +339,7 @@ body {
   transform: translateX(-2px);
 }
 
-/* ── 9. Stats Bar ── */
+/* ── 10. Stats Bar ── */
 .stats-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -329,7 +399,7 @@ body {
   color: var(--clr-text-muted);
 }
 
-/* ── 10. Controls ── */
+/* ── 11. Controls ── */
 .controls-row {
   display: flex;
   align-items: center;
@@ -408,7 +478,7 @@ body {
   padding: 8px;
 }
 
-/* ── 11. Task List & Cards ── */
+/* ── 12. Task List & Cards ── */
 .task-list {
   list-style: none;
   display: flex;
@@ -469,15 +539,8 @@ body {
 }
 
 @keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Checkbox circle */
@@ -568,15 +631,8 @@ body {
 }
 
 @keyframes pulse-badge {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.6;
-  }
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
 }
 
 /* Action buttons */
@@ -624,7 +680,7 @@ body {
   color: var(--clr-danger);
 }
 
-/* ── 12. Empty State ── */
+/* ── 13. Empty State ── */
 .empty-state {
   text-align: center;
   padding: 64px 24px;
@@ -642,15 +698,8 @@ body {
 }
 
 @keyframes bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-12px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
 }
 
 .empty-state h3 {
@@ -668,7 +717,7 @@ body {
   color: var(--clr-primary-lit);
 }
 
-/* ── 13. Form Card (Add Task Page) ── */
+/* ── 14. Form Card ── */
 .form-card {
   background: var(--clr-glass);
   border: 1px solid var(--clr-glass-border);
@@ -729,6 +778,7 @@ body {
   color: var(--clr-text);
   transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
   outline: none;
+  appearance: none;
   -webkit-appearance: none;
   color-scheme: dark;
 }
@@ -794,6 +844,13 @@ body {
   transform: translateY(0);
 }
 
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+}
+
 /* Cancel link */
 .btn-cancel {
   display: block;
@@ -816,7 +873,85 @@ body {
   background: rgba(255, 255, 255, 0.04);
 }
 
-/* ── 14. Footer ── */
+/* ── 15. Admin Dashboard ── */
+.admin-section {
+  background: var(--clr-glass);
+  border: 1px solid var(--clr-glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  padding: 24px;
+}
+
+.admin-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--clr-text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-lit));
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--clr-text-muted);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--clr-text-dim);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-table .role-admin {
+  color: var(--clr-primary-lit);
+  font-weight: 600;
+}
+
+.admin-table .status-done {
+  color: var(--clr-success);
+}
+
+.admin-table .status-pending {
+  color: var(--clr-text-muted);
+}
+
+/* ── 16. Footer ── */
 .app-footer {
   text-align: center;
   padding: 16px 0 0;
@@ -825,7 +960,7 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* ── 15. Scrollbar ── */
+/* ── 17. Scrollbar ── */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -839,7 +974,7 @@ body {
   border-radius: 999px;
 }
 
-/* ── 16. Responsive ── */
+/* ── 18. Responsive ── */
 @media (max-width: 600px) {
   .app-wrapper {
     padding: 0 14px 48px;
@@ -858,9 +993,12 @@ body {
     display: none;
   }
 
-  /* show only the + icon on small screens */
   .btn-add-nav {
     padding: 10px 14px;
+  }
+
+  .user-badge {
+    display: none;
   }
 
   .stats-bar {
@@ -887,5 +1025,9 @@ body {
   .task-item {
     gap: 12px;
     padding: 16px 14px 16px 18px;
+  }
+
+  .header-right {
+    gap: 4px;
   }
 }
