@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="TaskFlow — A modern To-Do List app with user accounts and cloud sync." />
+    <meta name="description"
+        content="TaskFlow — A modern To-Do List app to manage your tasks with date and time tracking." />
     <title>TaskFlow — Smart To-Do List</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
-
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  </head>
+</head>
 
-  <body>
+<body>
     <!-- Decorative background orbs -->
     <div class="orb orb-1" aria-hidden="true"></div>
     <div class="orb orb-2" aria-hidden="true"></div>
@@ -22,202 +23,263 @@
 
     <div class="app-wrapper">
 
-      <!-- ══════ PAGE: LOGIN ══════ -->
-      <div class="page page-hidden" id="page-login">
-        <header class="app-header" style="justify-content:center">
-          <div class="header-left" style="flex-direction:column;align-items:center;gap:4px">
-            <div style="display:flex;align-items:center;gap:12px">
-              <span class="logo-icon" aria-hidden="true">✦</span>
-              <h1 class="app-title">TaskFlow</h1>
+        <!-- ══════════════════════════════════════
+           PAGE 1 — Task List (default view)
+      ══════════════════════════════════════ -->
+        <div class="page" id="page-list">
+
+            <!-- ── Header ── -->
+            <header class="app-header">
+                <div class="header-left">
+                    <span class="logo-icon" aria-hidden="true">✦</span>
+                    <h1 class="app-title">TaskFlow</h1>
+                </div>
+                <div class="header-right">
+                    <span id="user-email-display" class="user-email"></span>
+                    <button class="btn-text" id="admin-nav-btn" style="display: none;">Admin</button>
+                    <button class="btn-text" id="logout-btn">Logout</button>
+                    <button class="btn-add-nav" id="go-to-add" aria-label="Add new task">
+                        <span class="btn-add-nav-icon" aria-hidden="true">＋</span>
+                        <span class="btn-add-nav-label">Add Task</span>
+                    </button>
+                </div>
+            </header>
+
+            <p class="app-subtitle">Stay organised · Get things done</p>
+
+            <!-- ── Stats Bar ── -->
+            <section class="stats-bar" aria-label="Task statistics">
+                <div class="stat-card">
+                    <span class="stat-number" id="total-count">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-card pending-card">
+                    <span class="stat-number" id="pending-count">0</span>
+                    <span class="stat-label">Pending</span>
+                </div>
+                <div class="stat-card done-card">
+                    <span class="stat-number" id="done-count">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-card overdue-card">
+                    <span class="stat-number" id="overdue-count">0</span>
+                    <span class="stat-label">Overdue</span>
+                </div>
+            </section>
+
+            <!-- ── Controls: Filter & Sort ── -->
+            <div class="controls-row">
+                <div class="filter-group" role="group" aria-label="Filter tasks">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="pending">Pending</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                    <button class="filter-btn" data-filter="overdue">Overdue</button>
+                </div>
+
+                <div class="sort-group">
+                    <label for="sort-select" class="sort-label">Sort:</label>
+                    <select id="sort-select" class="sort-select">
+                        <option value="datetime">By Date &amp; Time</option>
+                        <option value="newest">Newest Added</option>
+                        <option value="oldest">Oldest Added</option>
+                    </select>
+                </div>
             </div>
-            <p class="app-subtitle" style="margin-top:0">Welcome back! Log in to continue.</p>
-          </div>
-        </header>
 
-        <section class="form-card" aria-label="Login form">
-          <div class="form-grid" style="grid-template-columns:1fr">
-            <div class="input-group">
-              <label for="login-email" class="input-label">Email</label>
-              <div class="input-wrapper">
-                <span class="input-icon" aria-hidden="true">✉️</span>
-                <input type="email" id="login-email" class="form-input" placeholder="you@example.com" autocomplete="email" />
-              </div>
-            </div>
-            <div class="input-group">
-              <label for="login-password" class="input-label">Password</label>
-              <div class="input-wrapper">
-                <span class="input-icon" aria-hidden="true">🔒</span>
-                <input type="password" id="login-password" class="form-input" placeholder="Enter your password" autocomplete="current-password" />
-              </div>
-            </div>
-          </div>
-          <p class="error-msg" id="login-error" role="alert" aria-live="polite"></p>
-          <button class="btn-submit" id="login-btn">
-            <span aria-hidden="true">→</span> Log In
-          </button>
-          <p class="auth-switch">Don't have an account? <button class="link-btn" id="go-to-signup">Sign Up</button></p>
-        </section>
-      </div>
+            <!-- ── Task List ── -->
+            <main>
+                <ul class="task-list" id="task-list" aria-live="polite" aria-label="Task list"></ul>
 
-      <!-- ══════ PAGE: SIGNUP ══════ -->
-      <div class="page page-hidden" id="page-signup">
-        <header class="app-header" style="justify-content:center">
-          <div class="header-left" style="flex-direction:column;align-items:center;gap:4px">
-            <div style="display:flex;align-items:center;gap:12px">
-              <span class="logo-icon" aria-hidden="true">✦</span>
-              <h1 class="app-title">TaskFlow</h1>
-            </div>
-            <p class="app-subtitle" style="margin-top:0">Create a free account to get started.</p>
-          </div>
-        </header>
+                <!-- Empty state -->
+                <div class="empty-state hidden" id="empty-state">
+                    <div class="empty-icon">🎯</div>
+                    <h3>No tasks yet!</h3>
+                    <p>Hit the <strong>＋ Add Task</strong> button above to get started.</p>
+                </div>
+            </main>
 
-        <section class="form-card" aria-label="Signup form">
-          <div class="form-grid" style="grid-template-columns:1fr">
-            <div class="input-group">
-              <label for="signup-email" class="input-label">Email</label>
-              <div class="input-wrapper">
-                <span class="input-icon" aria-hidden="true">✉️</span>
-                <input type="email" id="signup-email" class="form-input" placeholder="you@example.com" autocomplete="email" />
-              </div>
-            </div>
-            <div class="input-group">
-              <label for="signup-password" class="input-label">Password</label>
-              <div class="input-wrapper">
-                <span class="input-icon" aria-hidden="true">🔒</span>
-                <input type="password" id="signup-password" class="form-input" placeholder="Min 6 characters" autocomplete="new-password" />
-              </div>
-            </div>
-            <div class="input-group">
-              <label for="signup-confirm" class="input-label">Confirm Password</label>
-              <div class="input-wrapper">
-                <span class="input-icon" aria-hidden="true">🔒</span>
-                <input type="password" id="signup-confirm" class="form-input" placeholder="Re-enter password" autocomplete="new-password" />
-              </div>
-            </div>
-          </div>
-          <p class="error-msg" id="signup-error" role="alert" aria-live="polite"></p>
-          <button class="btn-submit" id="signup-btn">
-            <span aria-hidden="true">✓</span> Create Account
-          </button>
-          <p class="auth-switch">Already have an account? <button class="link-btn" id="go-to-login">Log In</button></p>
-        </section>
-      </div>
+            <!-- ── Footer ── -->
+            <footer class="app-footer">
+                <p>TaskFlow &copy; 2026 &mdash; Tasks synced with Supabase.</p>
+            </footer>
 
-      <!-- ══════ PAGE: TASK LIST ══════ -->
-      <div class="page page-hidden" id="page-list">
-        <header class="app-header">
-          <div class="header-left">
-            <span class="logo-icon" aria-hidden="true">✦</span>
-            <h1 class="app-title">TaskFlow</h1>
-          </div>
-          <div class="header-right">
-            <span class="user-badge" id="user-email-badge"></span>
-            <button class="btn-add-nav" id="go-to-add" aria-label="Add new task">
-              <span class="btn-add-nav-icon" aria-hidden="true">＋</span>
-              <span class="btn-add-nav-label">Add Task</span>
-            </button>
-            <button class="btn-logout" id="logout-btn" aria-label="Log out" title="Log out">⏻</button>
-          </div>
-        </header>
+        </div><!-- /#page-list -->
 
-        <p class="app-subtitle">Stay organised · Get things done</p>
 
-        <section class="stats-bar" aria-label="Task statistics">
-          <div class="stat-card">
-            <span class="stat-number" id="total-count">0</span>
-            <span class="stat-label">Total</span>
-          </div>
-          <div class="stat-card pending-card">
-            <span class="stat-number" id="pending-count">0</span>
-            <span class="stat-label">Pending</span>
-          </div>
-          <div class="stat-card done-card">
-            <span class="stat-number" id="done-count">0</span>
-            <span class="stat-label">Completed</span>
-          </div>
-          <div class="stat-card overdue-card">
-            <span class="stat-number" id="overdue-count">0</span>
-            <span class="stat-label">Overdue</span>
-          </div>
-        </section>
+        <!-- ══════════════════════════════════════
+           PAGE 2 — Add Task Form
+      ══════════════════════════════════════ -->
+        <div class="page page-hidden" id="page-add">
 
-        <div class="controls-row">
-          <div class="filter-group" role="group" aria-label="Filter tasks">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="pending">Pending</button>
-            <button class="filter-btn" data-filter="completed">Completed</button>
-            <button class="filter-btn" data-filter="overdue">Overdue</button>
-          </div>
-          <div class="sort-group">
-            <label for="sort-select" class="sort-label">Sort:</label>
-            <select id="sort-select" class="sort-select">
-              <option value="datetime">By Date &amp; Time</option>
-              <option value="newest">Newest Added</option>
-              <option value="oldest">Oldest Added</option>
-            </select>
-          </div>
-        </div>
+            <!-- ── Header ── -->
+            <header class="app-header">
+                <div class="header-left">
+                    <!-- Back button -->
+                    <button class="btn-back" id="go-to-list" aria-label="Back to task list">
+                        <span aria-hidden="true">←</span>
+                    </button>
+                    <h2 class="page-title" id="form-page-title">New Task</h2>
+                </div>
+                <span class="logo-icon-sm" aria-hidden="true">✦</span>
+            </header>
 
-        <main>
-          <ul class="task-list" id="task-list" aria-live="polite" aria-label="Task list"></ul>
-          <div class="empty-state hidden" id="empty-state">
-            <div class="empty-icon">🎯</div>
-            <h3>No tasks yet!</h3>
-            <p>Hit the <strong>＋ Add Task</strong> button above to get started.</p>
-          </div>
-        </main>
+            <!-- ── Add Task Form ── -->
+            <section class="form-card" aria-label="Add new task">
 
-        <footer class="app-footer">
-          <p>TaskFlow &copy; 2026 &mdash; Powered by Supabase</p>
-        </footer>
-      </div>
+                <div class="form-grid">
+                    <!-- Task Name -->
+                    <div class="input-group span-full">
+                        <label for="task-name" class="input-label">Task Name</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon" aria-hidden="true">📝</span>
+                            <input type="text" id="task-name" class="form-input" placeholder="What needs to be done?"
+                                maxlength="120" autocomplete="off" />
+                        </div>
+                    </div>
 
-      <!-- ══════ PAGE: ADD / EDIT TASK ══════ -->
-      <div class="page page-hidden" id="page-add">
-        <header class="app-header">
-          <div class="header-left">
-            <button class="btn-back" id="go-to-list" aria-label="Back to task list">
-              <span aria-hidden="true">←</span>
-            </button>
-            <h2 class="page-title" id="form-page-title">New Task</h2>
-          </div>
-          <span class="logo-icon-sm" aria-hidden="true">✦</span>
-        </header>
+                    <!-- Date -->
+                    <div class="input-group">
+                        <label for="task-date" class="input-label">Date</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon" aria-hidden="true">📅</span>
+                            <input type="date" id="task-date" class="form-input" />
+                        </div>
+                    </div>
 
-        <section class="form-card" aria-label="Task form">
-          <div class="form-grid">
-            <div class="input-group span-full">
-              <label for="task-name" class="input-label">Task Name</label>
-              <div class="input-wrapper">
-                <span class="input-icon" aria-hidden="true">📝</span>
-                <input type="text" id="task-name" class="form-input" placeholder="What needs to be done?" maxlength="120" autocomplete="off" />
-              </div>
-            </div>
-            <div class="input-group">
-              <label for="task-date" class="input-label">Date</label>
-              <div class="input-wrapper">
-                <span class="input-icon" aria-hidden="true">📅</span>
-                <input type="date" id="task-date" class="form-input" />
-              </div>
-            </div>
-            <div class="input-group">
-              <label for="task-time" class="input-label">Time</label>
-              <div class="input-wrapper">
-                <span class="input-icon" aria-hidden="true">🕐</span>
-                <input type="time" id="task-time" class="form-input" />
-              </div>
-            </div>
-          </div>
-          <p class="error-msg" id="error-msg" role="alert" aria-live="polite"></p>
-          <button class="btn-submit" id="add-btn" aria-label="Save task">
-            <span aria-hidden="true">✓</span> <span id="submit-btn-text">Save Task</span>
-          </button>
-          <button class="btn-cancel" id="cancel-btn">Cancel &amp; go back</button>
-        </section>
-      </div>
+                    <!-- Time -->
+                    <div class="input-group">
+                        <label for="task-time" class="input-label">Time</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon" aria-hidden="true">🕐</span>
+                            <input type="time" id="task-time" class="form-input" />
+                        </div>
+                    </div>
+                </div>
 
-    </div>
+                <!-- Validation error -->
+                <p class="error-msg" id="error-msg" role="alert" aria-live="polite"></p>
 
-    <script src="script.js"></script>
-  </body>
+                <!-- Submit -->
+                <button class="btn-submit" id="add-btn" aria-label="Add task">
+                    <span aria-hidden="true">✓</span> <span id="submit-btn-text">Save Task</span>
+                </button>
+
+                <!-- Cancel link -->
+                <button class="btn-cancel" id="cancel-btn">Cancel &amp; go back</button>
+
+            </section>
+        </div><!-- /#page-add -->
+
+        <!-- ══════════════════════════════════════
+           PAGE 3 — Auth Page
+      ══════════════════════════════════════ -->
+        <div class="page page-hidden" id="page-auth">
+            <header class="app-header" style="justify-content: center; margin-bottom: 20px;">
+                <span class="logo-icon" aria-hidden="true">✦</span>
+                <h1 class="app-title">TaskFlow</h1>
+            </header>
+
+            <section class="form-card auth-card">
+                <h2 class="auth-title" id="auth-title">Welcome Back</h2>
+                <p class="auth-subtitle">Sign in to sync your tasks</p>
+
+                <div class="input-group">
+                    <label for="auth-email" class="input-label">Email</label>
+                    <input type="email" id="auth-email" class="form-input" placeholder="mail@example.com" />
+                </div>
+
+                <div class="input-group" style="margin-top: 15px;">
+                    <label for="auth-password" class="input-label">Password</label>
+                    <input type="password" id="auth-password" class="form-input" placeholder="••••••••" />
+                </div>
+
+                <p class="error-msg" id="auth-error"></p>
+
+                <button class="btn-submit" id="auth-submit-btn">
+                    <span id="auth-submit-text">Sign In</span>
+                    <span class="spinner" id="auth-loading" style="display: none;"></span>
+                </button>
+
+                <button class="btn-text auth-toggle" id="auth-toggle-btn">
+                    <span id="auth-toggle-text">Don't have an account? <strong>Sign Up</strong></span>
+                </button>
+            </section>
+        </div><!-- /#page-auth -->
+
+        <!-- ══════════════════════════════════════
+           PAGE 4 — Admin Dashboard
+      ══════════════════════════════════════ -->
+        <div class="page page-hidden" id="page-admin">
+            <header class="app-header">
+                <div class="header-left">
+                    <button class="btn-back" id="admin-back-btn" aria-label="Back to task list">
+                        <span aria-hidden="true">←</span>
+                    </button>
+                    <h2 class="page-title">Admin Dashboard</h2>
+                </div>
+            </header>
+
+            <section class="admin-stats-row">
+                <div class="stat-card">
+                    <span class="stat-number" id="admin-user-count">-</span>
+                    <span class="stat-label">Total Users</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="admin-task-count">-</span>
+                    <span class="stat-label">Total Tasks</span>
+                </div>
+            </section>
+
+            <section class="admin-section">
+                <h3>Users</h3>
+                <div class="table-container">
+                    <table class="admin-table" id="admin-users-table">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Joined</th>
+                                <th>Last Login</th>
+                                <th>Tasks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="admin-section">
+                <h3>All Tasks</h3>
+                <div class="table-container">
+                    <table class="admin-table" id="admin-tasks-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Task</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-tasks-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div><!-- /#page-admin -->
+
+    </div><!-- /.app-wrapper -->
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
 </html>
